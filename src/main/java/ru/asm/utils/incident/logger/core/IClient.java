@@ -1,5 +1,9 @@
 package ru.asm.utils.incident.logger.core;
 
+/**
+ * 
+ * 
+ */
 public interface IClient {
 
 	public void onIncident(ILogger logger);

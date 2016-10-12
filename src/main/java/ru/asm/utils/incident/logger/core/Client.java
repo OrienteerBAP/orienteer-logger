@@ -3,6 +3,10 @@ package ru.asm.utils.incident.logger.core;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 
+ * 
+ */
 public class Client implements IClient{
 	private Set<ILogger> loggers;
 	private IData data;

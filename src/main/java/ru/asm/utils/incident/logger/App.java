@@ -2,7 +2,6 @@ package ru.asm.utils.incident.logger;
 
 import ru.asm.utils.incident.logger.core.DefaultConfigurator;
 import ru.asm.utils.incident.logger.core.ILogger;
-import ru.asm.utils.incident.logger.core.Main;
 
 /**
  * Hello world!
@@ -13,9 +12,9 @@ public class App
     public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
-        Main mainModule = new Main(new DefaultConfigurator());
+        IncidentLogger mainModule = new IncidentLogger(new DefaultConfigurator());
         ILogger logger = mainModule.makeLogger();
-        logger.incident("Example incident");
+        logger.message("Example incident");
         logger.incident("Example incident");
         logger.incident("Example incident");
         logger.incident("Example incident");

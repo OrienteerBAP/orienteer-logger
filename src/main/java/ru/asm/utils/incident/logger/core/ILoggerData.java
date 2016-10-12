@@ -1,9 +1,12 @@
 package ru.asm.utils.incident.logger.core;
 
-import java.util.List;
-
-public interface ILoggerData{
-	public void add(String data);//need to be extend
-	public String get();
+/**
+ * 
+ * 
+ */
+public interface ILoggerData<T>{
+	public void set(String name,String value);
+	public void end();// end current transaction
+	public T get();// get all data 
 	public void clear();
 }

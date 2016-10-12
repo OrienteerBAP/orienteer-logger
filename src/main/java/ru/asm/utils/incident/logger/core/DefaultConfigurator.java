@@ -1,5 +1,9 @@
 package ru.asm.utils.incident.logger.core;
 
+/**
+ * 
+ * 
+ */
 public class DefaultConfigurator implements IConfigurator {
 	
 	IData data;

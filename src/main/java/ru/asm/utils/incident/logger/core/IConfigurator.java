@@ -1,5 +1,9 @@
 package ru.asm.utils.incident.logger.core;
 
+/**
+ * 
+ * 
+ */
 public interface IConfigurator {
 
 	ICoder getCoder();// if return null - then we will translate raw data

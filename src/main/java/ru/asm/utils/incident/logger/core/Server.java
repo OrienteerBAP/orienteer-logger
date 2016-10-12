@@ -1,5 +1,10 @@
 package ru.asm.utils.incident.logger.core;
 
+/**
+ * 
+ * 
+ */
+
 public class Server implements IServer{
 	private IData data;
 	private IReciever reciever;

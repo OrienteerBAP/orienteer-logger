@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DefaultData implements IData {
+/**
+ * 
+ * 
+ */
+public class DefaultData implements IData<String> {
 	private Map<Integer,String> data;
 	private Integer counter = 0;
 
@@ -12,7 +16,7 @@ public class DefaultData implements IData {
 		data = new HashMap<Integer,String>();
 	}
 	
-	public void applyLoggerData(ILoggerData loggerData) {
+	public void applyLoggerData(ILoggerData<String> loggerData) {
 		this.data.put(counter++, loggerData.get());
 	}
 
