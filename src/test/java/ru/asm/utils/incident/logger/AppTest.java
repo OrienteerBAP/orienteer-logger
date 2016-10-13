@@ -42,6 +42,6 @@ public class AppTest
         logger.incident("Example incident");
         logger.incident("Example incident");
         System.out.println(mainModule.getServerData().get());
-        assertTrue( true );
+        //assertTrue( true );
     }
 }

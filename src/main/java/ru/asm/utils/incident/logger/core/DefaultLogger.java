@@ -7,30 +7,12 @@ import java.util.Date;
  * 
  * 
  */
-public class DefaultLogger implements ILogger{
+public class DefaultLogger extends AbstractLogger{
 
-	ILoggerData<?> data;
-	IClient client;
-	
 	static SimpleDateFormat ft =  new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ssXXX");//w3c datetime format
 	
 	public DefaultLogger(ILoggerData<?> data) {
-		this.data = data;
-	}
-
-	public ILoggerData<?> getData() {
-		return data;
-	}
-	
-	//add record and send all records to server
-	public void incident(String incident){
-	    writeData(incident);
-		client.onIncident(this);
-	}
-	
-	//just record without sending
-	public void message(String message){
-	    writeData(message);
+		super(data);
 	}
 	
 	protected void writeData(String message){
@@ -45,15 +27,4 @@ public class DefaultLogger implements ILogger{
 	    data.set("Data", message);
 	    data.end();
 	}
-	
-	public void setClient(IClient client){
-		assert(false);
-		assert(client == null);
-		this.client = client;
-	}
-	
-	public void unlinkClient(){
-		this.client.removeLogger(this);
-	}
-
 }
