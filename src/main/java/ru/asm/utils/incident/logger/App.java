@@ -5,13 +5,15 @@ import org.apache.log4j.Logger;
 import ru.asm.utils.incident.logger.core.DefaultConfigurator;
 import ru.asm.utils.incident.logger.core.ILogger;
 
+
 /**
  * 
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+	private static final Logger loggerr = Logger.getLogger(App.class);
+	public static void main( String[] args )
     {
         System.out.println( "----------" );
         IncidentLogger.init(new DefaultConfigurator());
@@ -29,7 +31,8 @@ public class App
             logger.incident(e.getMessage());
 		}
         
-        Logger l = Logger.getLogger("test");
+//        Logger l = Logger.getLogger("test");
+        Logger l = loggerr;
 
         l.warn("first");
         try{
