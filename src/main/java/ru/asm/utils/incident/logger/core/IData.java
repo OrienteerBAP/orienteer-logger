@@ -6,12 +6,12 @@ package ru.asm.utils.incident.logger.core;
  * 
  * @param <T> type of your inner object, returned by method {@link ILoggerData.get}
  */
-public interface IData<T>{
+public interface IData{
 	/**
 	 * Apply data to self
 	 * @param data contains object implementable to self
 	 */
-	void applyLoggerData(ILoggerData<T> data);
+	void applyLoggerData(ILoggerData<?> data);
 	/**
 	 * To return self as serialized object 
 	 * @return self, or part of self, serialized by your serializer
