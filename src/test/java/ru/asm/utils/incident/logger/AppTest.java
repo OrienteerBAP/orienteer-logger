@@ -50,7 +50,7 @@ public class AppTest
             }
             IncidentLogger.close();
         }catch (Exception e) {
-            logger.incident(e.getMessage());
+            logger.incident(e);
 		}
         
         Logger l = Logger.getLogger("test");
@@ -63,7 +63,7 @@ public class AppTest
             }
             IncidentLogger.close();
         }catch (Exception e) {
-			l.error(e.getMessage());
+			l.error(e.getMessage(),e);
 		}
 
         l.warn("third shouldn't be printed");

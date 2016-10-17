@@ -25,7 +25,12 @@ public class Log4jIncidentAppender extends AppenderSkeleton{
     protected void append(LoggingEvent event) {
     	if (incidentLogger == null) incidentLogger = IncidentLogger.get().makeLogger();
     	if (event.getLevel().isGreaterOrEqual(icnidentLevel)){
-        	incidentLogger.incident(event.getRenderedMessage());
+    		Throwable e = event.getThrowableInformation().getThrowable();
+    		if (e!=null){
+            	incidentLogger.incident(e);
+    		}else{
+            	incidentLogger.incident(event.getRenderedMessage());
+    		}
     	}else{
         	incidentLogger.message(event.getRenderedMessage());
     	}

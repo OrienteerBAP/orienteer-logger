@@ -16,8 +16,10 @@ public interface ILogger {
 
 	//add record and send all records to server
 	public void incident(String incident);
-
-	//just make record without sending
-	public void message(String message);
 	
+	//add exception and send all records to server
+	public void incident(Throwable e);
+
+	//just finalize current record without sending
+	public void message(String message);
 }

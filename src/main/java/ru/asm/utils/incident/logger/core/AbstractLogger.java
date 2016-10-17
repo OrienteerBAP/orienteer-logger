@@ -19,6 +19,11 @@ public abstract class AbstractLogger implements ILogger{
 	    writeData(incident);
 		client.onIncident(this);
 	}
+	//
+	public void incident(Throwable e){
+	    writeData(e);
+		client.onIncident(this);
+	}
 	
 	//just record without sending
 	public void message(String message){
@@ -26,6 +31,8 @@ public abstract class AbstractLogger implements ILogger{
 	}
 	
 	protected abstract void writeData(String message);
+
+	protected abstract void writeData(Throwable e);
 	
 	public void setClient(IClient client){
 		assert(client != null);
