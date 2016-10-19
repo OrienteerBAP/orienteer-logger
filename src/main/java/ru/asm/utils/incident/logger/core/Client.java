@@ -47,6 +47,7 @@ public class Client implements IClient{
 				toSend = coder.code(toSend);
 			}
 			sender.send(toSend);
+			return false;
 		}
 		return true;
 	}

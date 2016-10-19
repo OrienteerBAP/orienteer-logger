@@ -14,10 +14,12 @@ public class DefaultSender implements ISender{
 		this.reciever = reciever;
 	}
 
-	public void send(String input) {
+	public boolean send(String input) {
 		if(reciever != null){
 			reciever.recieve(input);
+			return true;
 		}
+		return false;
 	}
 
 }
