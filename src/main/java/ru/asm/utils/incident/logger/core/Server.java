@@ -23,7 +23,7 @@ public class Server implements IServer{
 			if (decoder!=null){
 				newData = decoder.decode(newData);
 			}
-			data.apply(newData);
+			data.applyData(newData);
 		};
 	}
 	

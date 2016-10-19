@@ -48,9 +48,19 @@ public class App
         l.warn("third shouldn't be printed");
 
         IncidentLogger.close();
-		
-
-        System.out.println(IncidentLogger.get().getServerData().get());
-
+        System.out.println(IncidentLogger.get().getServerData().getData());
+		/*
+        int counter=0;
+        do{
+        	try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	//counter++;
+            System.out.println(counter++);
+        }while(true);
+*/
     }
 }

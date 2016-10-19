@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ru.asm.utils.incident.logger.core.IData.IDataFlag;
+
 /**
  * 
  * 
@@ -20,9 +22,12 @@ public class DefaultData implements IData {
 		this.data.put(counter++, (String) loggerData.get());
 	}
 
-	public String get() {
+	public String getData() {
+		return getData(IDataFlag.NOTHING);
+	}
+
+	public String getData(IDataFlag flag) {
 		// TODO serialize
-		
 		String result = "";
 		for(Entry<Integer, String> entry : data.entrySet()) {
 			result = result.concat(entry.getKey().toString())
@@ -32,9 +37,13 @@ public class DefaultData implements IData {
 		}
 		return result;
 	}
+	
+	public void mark(IDataFlag before,IDataFlag now){
+		// TODO Auto-generated method stub
+	}
 
-	public void apply(String newData) {
-		// TODO unserialize and apply new objects
+	public void applyData(String newData) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -3,6 +3,8 @@ package ru.asm.utils.incident.logger.core;
 import java.util.HashSet;
 import java.util.Set;
 
+import ru.asm.utils.incident.logger.core.IData.IDataFlag;
+
 /**
  * 
  * 
@@ -32,17 +34,20 @@ public class Client implements IClient{
 	
 	public void onIncident(ILogger logger){
 		data.applyLoggerData(logger.getData());
-		sendData();
 		logger.getData().clear();
+		if (sendData()){
+			data.mark(IDataFlag.SENDED, IDataFlag.SENDED_SUCCESSFULLY);
+		};
 	}
 	
-	private void sendData(){
-		String toSend = data.get();
+	private boolean sendData(){
+		String toSend = data.getData(IDataFlag.SENDED);
 		if (coder != null ){
 			toSend = coder.code(toSend);
 		}
 		if (sender != null){
 			sender.send(toSend);
 		}
+		return true;
 	}
 }

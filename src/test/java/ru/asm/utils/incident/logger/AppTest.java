@@ -71,6 +71,6 @@ public class AppTest
         IncidentLogger.close();
 		
 
-        System.out.println(IncidentLogger.get().getServerData().get());
+        System.out.println(IncidentLogger.get().getServerData().getData());
     }
 }
