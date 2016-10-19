@@ -8,7 +8,6 @@ public interface IReciever {
 
 	void setServer(Server server);
 
-	String recieve();
-	
+	void recieve(String data);
 
 }

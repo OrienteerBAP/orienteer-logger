@@ -41,11 +41,11 @@ public class Client implements IClient{
 	}
 	
 	private boolean sendData(){
-		String toSend = data.getData(IDataFlag.SENDED);
-		if (coder != null ){
-			toSend = coder.code(toSend);
-		}
 		if (sender != null){
+			String toSend = data.getData(IDataFlag.SENDED);
+			if (coder != null ){
+				toSend = coder.code(toSend);
+			}
 			sender.send(toSend);
 		}
 		return true;

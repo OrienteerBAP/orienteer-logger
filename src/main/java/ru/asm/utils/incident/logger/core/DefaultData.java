@@ -1,8 +1,13 @@
 package ru.asm.utils.incident.logger.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import ru.asm.utils.incident.logger.core.IData.IDataFlag;
 
@@ -13,6 +18,8 @@ import ru.asm.utils.incident.logger.core.IData.IDataFlag;
 public class DefaultData implements IData {
 	private Map<Integer,String> data;
 	private Integer counter = 0;
+	private Gson gson = new Gson();
+
 
 	public DefaultData() {
 		data = new HashMap<Integer,String>();
@@ -27,24 +34,22 @@ public class DefaultData implements IData {
 	}
 
 	public String getData(IDataFlag flag) {
-		// TODO serialize
-		String result = "";
-		for(Entry<Integer, String> entry : data.entrySet()) {
-			result = result.concat(entry.getKey().toString())
-				.concat("-")
-				.concat(entry.getValue())
-				.concat("\n");
-		}
-		return result;
+		return gson.toJson(data);
 	}
 	
 	public void mark(IDataFlag before,IDataFlag now){
-		// TODO Auto-generated method stub
+		if (before ==IDataFlag.SENDED && now == IDataFlag.SENDED_SUCCESSFULLY){
+				
+		}
 	}
 
 	public void applyData(String newData) {
-		// TODO Auto-generated method stub
-		
+		Map<Integer,String> anotherData = gson.fromJson(newData, new TypeToken<HashMap<Integer,String>>(){}.getType());
+		for(Entry<Integer, String> entry : anotherData.entrySet()) {
+			if (!data.containsKey(entry.getKey())){
+				data.put(entry.getKey(), entry.getValue());
+			}
+		}		
 	}
 
 }

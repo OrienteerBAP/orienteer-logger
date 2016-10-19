@@ -6,10 +6,17 @@ package ru.asm.utils.incident.logger.core;
  */
 public class DefaultConfigurator implements IConfigurator {
 	
-	IData data;
+	IData serverData;
+	IData clientData;
+	DefaultSender sender;
+	IReciever reciever;
 	
 	public DefaultConfigurator() {
-		data = new DefaultData();
+		serverData = new DefaultData();
+		clientData = new DefaultData();
+		sender = new DefaultSender();
+		reciever = new DefaultReciever();
+		sender.setReciever(reciever);
 	}
 
 	public ICoder getCoder() {
@@ -23,21 +30,19 @@ public class DefaultConfigurator implements IConfigurator {
 	}
 
 	public ISender getSender() {
-		// TODO Auto-generated method stub
-		return null;
+		return sender;
 	}
 
 	public IReciever getReciever() {
-		// TODO Auto-generated method stub
-		return null;
+		return reciever;
 	}
 
 	public IData getServerData() {
-		return data;
+		return serverData;
 	}
 
 	public IData getClientData() {
-		return data;
+		return clientData;
 	}
 	
 	public ILogger makeLogger() {

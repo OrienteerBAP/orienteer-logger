@@ -4,7 +4,7 @@
 
   <groupId>ru.asm.utils</groupId>
   <artifactId>incident.logger</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.6-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>incident.logger</name>
@@ -26,5 +26,11 @@
     	<artifactId>log4j</artifactId>
     	<version>1.2.17</version>
     </dependency>
+    <dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.7</version>
+	    <scope>compile</scope>
+	 </dependency>   
   </dependencies>
 </project>

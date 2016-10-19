@@ -17,14 +17,11 @@ public class Server implements IServer{
 		data = configurator.getServerData();
 	}
 	
-	public void onRecieve(){
-		if (reciever!=null){
-			String newData = reciever.recieve();
-			if (decoder!=null){
-				newData = decoder.decode(newData);
-			}
-			data.applyData(newData);
-		};
+	public void onRecieve(String recievedData){
+		if (decoder!=null){
+			recievedData = decoder.decode(recievedData);
+		}
+		data.applyData(recievedData);
 	}
 	
 	public IData getData(){
