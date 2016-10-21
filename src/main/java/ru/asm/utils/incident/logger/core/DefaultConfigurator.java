@@ -9,14 +9,14 @@ public class DefaultConfigurator implements IConfigurator {
 	IData serverData;
 	IData clientData;
 	DefaultSender sender;
-	IReciever reciever;
+	IReceiver receiver;
 	
 	public DefaultConfigurator() {
 		serverData = new DefaultData();
 		clientData = new DefaultData();
 		sender = new DefaultSender();
-		reciever = new DefaultReciever();
-		sender.setReciever(reciever);
+		receiver = new DefaultReceiver();
+		sender.setReceiver(receiver);
 	}
 
 	public ICoder getCoder() {
@@ -33,8 +33,8 @@ public class DefaultConfigurator implements IConfigurator {
 		return sender;
 	}
 
-	public IReciever getReciever() {
-		return reciever;
+	public IReceiver getReceiver() {
+		return receiver;
 	}
 
 	public IData getServerData() {

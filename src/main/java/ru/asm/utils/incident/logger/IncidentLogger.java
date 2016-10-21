@@ -34,6 +34,7 @@ public class IncidentLogger {
 	 */
 	public static void init(IConfigurator configurator) {
 		assert(INSTANCE.configurator == null);
+		assert(configurator != null);
 		
 		INSTANCE.configurator = configurator;
 

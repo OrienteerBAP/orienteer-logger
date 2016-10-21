@@ -12,7 +12,7 @@ public interface IConfigurator {
 
 	ISender getSender(); //if return null - then all data be never sended
 
-	IReciever getReciever(); //may be null only in case getSender return null
+	IReceiver getReceiver(); //may be null only in case getSender return null
 
 	IData getServerData();
 	

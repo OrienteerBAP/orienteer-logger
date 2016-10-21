@@ -32,6 +32,7 @@ public interface IData{
 	
 	/**
 	 * Mark elements with "before" flag to "now" flag. Or make something else, like deleting.
+	 * TODO I do not like this method. Need change it to more elegant.
 	 * @param before
 	 * @param now
 	 */

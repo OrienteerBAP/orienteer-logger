@@ -4,19 +4,19 @@ import ru.asm.utils.incident.logger.IncidentLogger;
 
 public class DefaultSender implements ISender{
 
-	IReciever reciever; 
+	IReceiver receiver; 
 	
 	public DefaultSender() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setReciever(IReciever reciever){
-		this.reciever = reciever;
+	public void setReceiver(IReceiver receiver){
+		this.receiver = receiver;
 	}
 
 	public boolean send(String input) {
-		if(reciever != null){
-			reciever.recieve(input);
+		if(receiver != null){
+			receiver.receive(input);
 			return true;
 		}
 		return false;
