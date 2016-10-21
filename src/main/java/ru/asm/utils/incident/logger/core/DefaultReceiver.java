@@ -12,7 +12,7 @@ public class DefaultReceiver implements IReceiver{
 	}
 	
 	public void receive(String data) {
-		server.onRecieve(data);
+		server.onReceive(data);
 	}
 
 }
