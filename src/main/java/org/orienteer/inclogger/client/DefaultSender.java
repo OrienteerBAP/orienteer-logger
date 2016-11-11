@@ -18,7 +18,7 @@ public class DefaultSender implements ISender{
 
 	public boolean send(String input) {
 		if(receiver != null){
-			receiver.receive(input);
+			receiver.receive("default",input);
 			return true;
 		}
 		return false;

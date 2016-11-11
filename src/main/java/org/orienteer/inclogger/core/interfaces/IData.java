@@ -40,7 +40,8 @@ public interface IData{
 	
 	/**
 	 * Data applied to self. Should be support indexes or something that will allow you to transmit all the data again and again
+	 * @param clientInfo info about client, like IP address
 	 * @param newData value, returned by other IData.get() object
 	 */
-	void applyData(String newData);
+	void applyData(String clientInfo,String newData);
 }

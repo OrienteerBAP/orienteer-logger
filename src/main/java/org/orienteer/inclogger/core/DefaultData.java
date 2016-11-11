@@ -45,7 +45,7 @@ public class DefaultData implements IData {
 		}
 	}
 
-	public void applyData(String newData) {
+	public void applyData(String clientInfo,String newData) {
 		Map<Integer,String> anotherData = gson.fromJson(newData, new TypeToken<HashMap<Integer,String>>(){}.getType());
 		for(Entry<Integer, String> entry : anotherData.entrySet()) {
 			if (!data.containsKey(entry.getKey())){
