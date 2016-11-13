@@ -14,8 +14,8 @@ public class DefaultReceiver implements IReceiver{
 		this.server=server;
 	}
 	
-	public void receive(String data) {
-		server.onReceive(data);
+	public void receive(String clientInfo,String data) {
+		server.onReceive(clientInfo,data);
 	}
 
 }

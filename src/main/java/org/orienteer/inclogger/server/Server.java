@@ -23,11 +23,11 @@ public class Server implements IServer{
 		data = configurator.getServerData();
 	}
 	
-	public void onReceive(String receivedData){
+	public void onReceive(String clientInfo, String receivedData){
 		if (decoder!=null){
 			receivedData = decoder.decode(receivedData);
 		}
-		data.applyData(receivedData);
+		data.applyData(clientInfo,receivedData);
 	}
 	
 	public IData getData(){
