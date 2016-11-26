@@ -14,16 +14,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.orienteer</groupId>
-	<artifactId>incident-logger</artifactId>
+	<artifactId>logger</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Pure Java Incident Logger</name>
+	<name>Pure Java Events Logger</name>
 	<url>http://orienteer.org</url>
 	<scm>
-		<url>https://github.com/OrienteerBAP/Incident-Logger</url>
-		<connection>scm:git:ssh://github.com:OrienteerBAP/Incident-Logger.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:OrienteerBAP/Incident-Logger.git</developerConnection>
+		<url>https://github.com/OrienteerBAP/orienteer-logger</url>
+		<connection>scm:git:ssh://github.com:OrienteerBAP/orienteer-logger.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:OrienteerBAP/orienteer-logger.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<properties>
@@ -32,7 +32,7 @@
 
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/OrienteerBAP/Incident-Logger/issues</url>
+		<url>https://github.com/OrienteerBAP/orienteer-logger/issues</url>
 	</issueManagement>
 	<distributionManagement>
 		<snapshotRepository>
@@ -70,17 +70,6 @@
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.7</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<build>
