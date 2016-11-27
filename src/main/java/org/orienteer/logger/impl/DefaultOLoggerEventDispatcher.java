@@ -45,6 +45,10 @@ public class DefaultOLoggerEventDispatcher implements IOLoggerEventDispatcher, I
 				syslog(null, e);
 			}
 		}
+		syslog(event);
+	}
+	
+	protected void syslog(OLoggerEvent event) {
 		syslog("OLogger Event: "+event, null);
 	}
 	
