@@ -19,6 +19,7 @@
 	<packaging>jar</packaging>
 
 	<name>Pure Java Events Logger</name>
+	<description>Pure Java Events Logger for all types of java applications: client/server side, android, etc.</description>
 	<url>http://orienteer.org</url>
 	<scm>
 		<url>https://github.com/OrienteerBAP/orienteer-logger</url>
