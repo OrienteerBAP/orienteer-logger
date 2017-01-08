@@ -22,8 +22,8 @@
 	<url>http://orienteer.org</url>
 	<scm>
 		<url>https://github.com/OrienteerBAP/orienteer-logger</url>
-		<connection>scm:git:ssh://github.com:OrienteerBAP/orienteer-logger.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:OrienteerBAP/orienteer-logger.git</developerConnection>
+		<connection>scm:git:ssh://github.com/OrienteerBAP/orienteer-logger.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/OrienteerBAP/orienteer-logger.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<properties>
