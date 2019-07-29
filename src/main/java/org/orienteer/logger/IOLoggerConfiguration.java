@@ -4,15 +4,21 @@ import java.util.Map;
 
 public interface IOLoggerConfiguration {
 	
-	public String getApplicationName();
-	public void setApplicationName(String applicationName);
-	public String getNodeId();
-	public void setNodeId(String nodeId);
-	public String getCollectorUrl();
-	public void setCollectorUrl(String url);
-	public void setProperty(String name, Object value);
-	public Object getProperty(String name);
-	public void setProperties(Map<String, ?> properties);
-	public Map<String, ?> getProperties();
+	String getApplicationName();
+	void setApplicationName(String applicationName);
 
+	String getNodeId();
+	void setNodeId(String nodeId);
+
+	String getCollectorUrl();
+	void setCollectorUrl(String url);
+
+	Object getProperty(String name);
+	void setProperty(String name, Object value);
+
+	Map<String, ?> getProperties();
+	void setProperties(Map<String, ?> properties);
+
+	IOCorrelationIdGenerator getCorrelationIdGenerator();
+	void setCorrelationIdGenerator(IOCorrelationIdGenerator correlationIdGenerator);
 }

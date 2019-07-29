@@ -1,6 +1,5 @@
 package org.orienteer.logger;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
