@@ -11,58 +11,9 @@ import java.util.Collection;
  * Internal class for different utilities.
  * Yes - there are bunch of libraries which can do that, but we don't want to have extra dependencies 
  */
-public class OLoggerUtils {
-	
-	protected final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-	
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
-	
-	public static String getCorrelationId(Object object) {
-		if(object==null) return "0000";
-		else if(object instanceof Throwable) return getCorrelationIdForThrowable((Throwable)object);
-		else {
-			MessageDigest md;
-	        try {
-	            md = MessageDigest.getInstance("MD5");
-	        } catch (NoSuchAlgorithmException nsae) {
-	            throw new InternalError("MD5 not supported", nsae);
-	        }
-			if(object instanceof Collection) {
-				for(Object subObject : (Collection<?>)object) {
-					md.update(subObject.getClass().getName().getBytes());
-					md.update(subObject.toString().getBytes());
-				}
-			} else {
-				md.update(object.getClass().getName().getBytes());
-				md.update(object.toString().getBytes());
-			}
-			return bytesToHex(md.digest());
-		}
-	}
-	
-	public static String getCorrelationIdForThrowable(Throwable thr) {
-		Throwable cause = thr;
-		while(cause.getCause()!=null) cause = cause.getCause();
-		StackTraceElement[] stacktrace = cause.getStackTrace();
-		MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException nsae) {
-            throw new InternalError("MD5 not supported", nsae);
-        }
-		for (StackTraceElement ste : stacktrace) {
-			md.update(ste.toString().getBytes());
-		}
-		return bytesToHex(md.digest());
-	}
+public final class OLoggerUtils {
+
+	private OLoggerUtils() {}
 	
 	public static StringBuilder appendJson(StringBuilder sb, String fieldName, Object value) {
 		sb.append('"');

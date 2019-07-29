@@ -6,28 +6,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.orienteer.logger.IOCorrelationIdGenerator;
 import org.orienteer.logger.IOLoggerConfiguration;
 
 public class DefaultOLoggerConfiguration implements IOLoggerConfiguration {
 	
 	private String mainClassName;
-	
-	
 	private Map<String, Object> properties = new HashMap<>();
-	
+	private IOCorrelationIdGenerator correlationIdGenerator;
+
 	public DefaultOLoggerConfiguration() {
 		Properties sysProperties = System.getProperties();
-		for(Object key : sysProperties.keySet()) {
-			if(key instanceof String) {
+		for (Object key : sysProperties.keySet()) {
+			if (key instanceof String) {
 				String name = (String) key;
-				if(name.startsWith("ologger.")) {
+				if (name.startsWith("ologger.")) {
 					setProperty(name.substring("ologger.".length()), sysProperties.get(name));
 				}
 			}
 		}
+		correlationIdGenerator = new DefaultCorrelationIdGenerator();
 	}
 	
 	public DefaultOLoggerConfiguration(Map<String, ?> properties) {
+		this();
 		setProperties(properties);
 	}
 
@@ -88,6 +90,18 @@ public class DefaultOLoggerConfiguration implements IOLoggerConfiguration {
 	@Override
 	public void setProperties(Map<String, ?> properties) {
 		this.properties.putAll(properties);
+	}
+
+	@Override
+	public IOCorrelationIdGenerator getCorrelationIdGenerator() {
+		return correlationIdGenerator;
+	}
+
+	@Override
+	public void setCorrelationIdGenerator(IOCorrelationIdGenerator correlationIdGenerator) {
+		if (correlationIdGenerator == null)
+			throw new IllegalArgumentException("Correlation Id Generator couldn't be null!");
+		this.correlationIdGenerator = correlationIdGenerator;
 	}
 
 	@Override
