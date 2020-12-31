@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.UUID;
 
 import org.orienteer.logger.IOLoggerConfigurable;
@@ -17,22 +18,23 @@ public class DefaultOLoggerEventFactory implements IOLoggerEventFactory, IOLogge
 	private IOLoggerConfiguration config;
 
 	@Override
-	public OLoggerEvent createLoggerEvent(Object seedObject) {
+	public OLoggerEvent createLoggerEvent(Object seedObject, Object source, Map<String, ?> metaData) {
+		OLoggerEvent event;
 		if (seedObject instanceof OLoggerEvent) {
-			return (OLoggerEvent) seedObject;
+			event = (OLoggerEvent) seedObject;
 		} else {
-			OLoggerEvent event = new OLoggerEvent();
+			event = new OLoggerEvent();
 			if(seedObject instanceof Throwable) {
 				event.setMessage(createMessageFromThrowable((Throwable) seedObject));
 			} else if (seedObject != null) {
 				event.setMessage(createMessageFromObject(seedObject));
 			}
-			event.setApplication(config.getApplicationName());
-			event.setNodeId(config.getNodeId());
-			event.setCorrelationId(createCorrelationId(seedObject));
 			event.setSeed(seedObject);
-			return event;
 		}
+		event.setApplication(config.getApplicationName());
+		event.setNodeId(config.getNodeId());
+		event.setCorrelationId(createCorrelationId(seedObject));
+		return event;
 	}
 
 	protected String createMessageFromThrowable(Throwable e) {

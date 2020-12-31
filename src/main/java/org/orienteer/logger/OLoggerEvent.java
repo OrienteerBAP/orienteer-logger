@@ -21,6 +21,7 @@ public class OLoggerEvent {
 	private Date dateTime = new Date();
 	private String correlationId = eventId;
 	private Map<String, Object> metaData = new HashMap<>();
+	private Object source;
 	
 	public Object getSeed() {
 		return seed;
@@ -91,8 +92,17 @@ public class OLoggerEvent {
 		return this;
 	}
 	
-	public OLoggerEvent setMetaData(Map<String, Object> meta) {
+	public OLoggerEvent setMetaData(Map<String, ?> meta) {
 		metaData.putAll(meta);
+		return this;
+	}
+	
+	public Object getSource() {
+		return source;
+	}
+	
+	public OLoggerEvent setSource(Object source) {
+		this.source = source;
 		return this;
 	}
 	
@@ -106,6 +116,7 @@ public class OLoggerEvent {
 			for(Map.Entry<String, Object> entry : metaData.entrySet()) {
 				appendJson(sb, entry.getKey(), entry.getValue()).append(", ");
 			}
+			appendJson(sb, "source", this.source).append(", ");
 			appendJson(sb, "dateTime", this.dateTime.getTime());
 		sb.append("}");
 		return sb.toString();

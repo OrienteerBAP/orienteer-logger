@@ -2,6 +2,7 @@ package org.orienteer.logger;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Entry point for Orienteer Logger
@@ -19,7 +20,15 @@ public class OLogger {
 	}
 	
 	public void logEvent(Object object) {
-		OLoggerEvent event = loggerEventFactory.createLoggerEvent(object);
+		logEvent(object, null, null);
+	}
+	
+	public void logEvent(Object object, Object source) {
+		logEvent(object, source, null);
+	}
+	
+	public void logEvent(Object object, Object source, Map<String, ?> metaData) {
+		OLoggerEvent event = loggerEventFactory.createLoggerEvent(object, source, metaData);
 		for (IOLoggerEventEnhancer enhancer : enahancers) {
 			event = enhancer.enhance(event);
 		}
@@ -46,5 +55,12 @@ public class OLogger {
 		get().logEvent(object);
 	}
 	
+	public static void log(Object object, Object source) {
+		get().logEvent(object, source);
+	}
+	
+	public static void log(Object object, Object source, Map<String, ?> metaData) {
+		get().logEvent(object, source, metaData);
+	}
 	
 }
