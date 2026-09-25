@@ -91,6 +91,31 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Coverage report (no thresholds): target/site/jacoco/ after `verify`. Only this project's classes are instrumented. -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>org/orienteer/**</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- Replaces maven-deploy-plugin: `./mvnw deploy` publishes -SNAPSHOTs to ${central.snapshots.url} and
 			     releases as a validated bundle to the Central Portal. Credentials: server ${central.server.id} in ~/.m2/settings.xml.
 			     Only the owner uploads (D11). autoPublish is left at false: a release is published manually in the portal. -->
@@ -207,6 +232,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.22.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.15</version>
 				</plugin>
 				<plugin>
 					<groupId>org.sonatype.central</groupId>
