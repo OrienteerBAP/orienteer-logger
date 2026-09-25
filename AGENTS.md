@@ -30,7 +30,7 @@ Modernized in lockstep with Orienteer; dormant from Dec 2020 to Sep 2026.
 ## Build status — read first
 
 - Stage A is in progress (plan section A): the pom still has Java 8 source/target and unpinned/old plugins.
-  Until the Maven Wrapper lands (A1) use `mvn` instead of `./mvnw`.
+- Use `./mvnw` (Maven 3.9.16, script-only wrapper). `.sdkmanrc` pins Temurin 21.0.11.
 - Only the owner deploys or releases (Central Portal). Agents never upload, push or tag. OSSRH and jcenter are dead.
 
 ## Commands

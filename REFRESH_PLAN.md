@@ -90,8 +90,8 @@ Baseline (2026-09-25, untouched pom, `mvn` 3.9.16): `clean verify` **green on JD
 warnings; surefire 3.5.4, jar 3.5.0, clean 3.2.0, resources 3.4.0 come unpinned from Maven's defaults. `-Prelease -Dgpg.skip`
 also passes on JDK 21 (javadoc 2.10.4 still runs, 89 "no comment" warnings, 0 errors). Jar: 14 classes, no resources.
 
-- [ ] A1 Maven Wrapper 3.9.16 (`mvn wrapper:wrapper -Dmaven=3.9.16 -Dtype=only-script`): commit `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties`
-- [ ] A1 `.sdkmanrc` (`java=21.0.11-tem`) and a minimal `.editorconfig` (UTF-8, LF, tabs for `*.java`/`*.xml`; no trailing-whitespace or final-newline enforcement; **no reformat**)
+- [x] A1 Maven Wrapper 3.9.16 (`mvn wrapper:wrapper -Dmaven=3.9.16 -Dtype=only-script`): commit `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` — 2026-09-25, wrapper plugin 3.3.4; scripts byte-identical to wicket-orientdb's; `./mvnw clean verify` green (JDK 21)
+- [x] A1 `.sdkmanrc` (`java=21.0.11-tem`) and a minimal `.editorconfig` (UTF-8, LF, tabs for `*.java`/`*.xml`; no trailing-whitespace or final-newline enforcement; **no reformat**) — 2026-09-25; CRLF for `*.cmd`. The two 4-space Java files keep their style (noted in the file)
 - [ ] A2 Pin every build plugin once in `<pluginManagement>` with the wicket-orientdb versions (Appendix B); release-profile source/javadoc/gpg pinned too (versions only; wiring changes in R); nexus-staging and release plugin left for R (D7)
 - [ ] A2 Add `maven-enforcer-plugin`: `requireMavenVersion [3.9,)`, `requireJavaVersion [21,)`
 - [ ] A3 Compiler: `maven.compiler.release=21` replaces `source`/`target` 1.8 (there is no `-parameters` to keep)
