@@ -27,6 +27,7 @@
 		<tag>HEAD</tag>
 	</scm>
 	<properties>
+		<maven.compiler.release>21</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -128,8 +129,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.16.0</version>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
+						<release>${maven.compiler.release}</release>
 						<encoding>UTF-8</encoding>
 						<showWarnings>true</showWarnings>
 						<showDeprecation>true</showDeprecation>
