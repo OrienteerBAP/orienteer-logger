@@ -22,15 +22,20 @@ Modernized in lockstep with Orienteer; dormant from Dec 2020 to Sep 2026.
 
 ## Stack
 
-- Java: Stage A target `--release 21`, built and tested on JDK 21 **and** 25. Plain JDK APIs only
+- Java: `--release 21` (`maven.compiler.release`), built and tested on JDK 21 **and** 25. Plain JDK APIs only
   (`HttpURLConnection`, `MessageDigest`, `ManagementFactory`).
 - **No runtime dependencies** — keep it that way (README promise, plan D4). No Lombok, no logging framework.
 - Tests: JUnit 4 only. Build: Maven 3.9.16; Temurin 21.0.11 default, Temurin 25.0.4 for verification.
 
 ## Build status — read first
 
-- Stage A is in progress (plan section A): the pom still has Java 8 source/target and unpinned/old plugins.
-- Use `./mvnw` (Maven 3.9.16, script-only wrapper). `.sdkmanrc` pins Temurin 21.0.11.
+- **Stage A done (2026-09-25):** `./mvnw clean verify` is green on Temurin 21 and 25 (4 tests), no `--add-opens`.
+  `master` = Stage A = `1.4-SNAPSHOT`, which Orienteer builds against. **Never install or publish later work as
+  `1.4-SNAPSHOT`** (plan D3): `1.4` is released from Stage A after Orienteer P3 is green, then `master` → `1.5-SNAPSHOT`.
+- Stages B/C need no code here (no Wicket/servlet/inject/mail); re-check with the searches in plan sections B/C.
+- Use `./mvnw` (Maven 3.9.16, script-only wrapper). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21; `.sdkmanrc` pins
+  Temurin 21.0.11. Plugin versions live only in `<pluginManagement>`.
+- Publishing is still the old OSSRH setup until phase R replaces it.
 - Only the owner deploys or releases (Central Portal). Agents never upload, push or tag. OSSRH and jcenter are dead.
 
 ## Commands
@@ -76,6 +81,7 @@ JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify  # JDK 25 che
 ## Pitfalls
 
 - Exception correlation IDs hash `StackTraceElement.toString()`, which contains JDK module names and JDK line numbers:
-  the same exception gets a different ID on a different runtime JDK (plan X, open question).
+  the same exception gets a different ID on a different runtime JDK, measured 21 vs 25 (plan open question).
+- `OLogger.log(obj, source, metaData)`: source/metadata are applied by `DefaultOLoggerEventFactory` since Stage A (D9).
 - `DefaultOLoggerEventDispatcher` has no timeouts and runs on the caller's thread (in Orienteer: the request thread).
 - `new DefaultOLoggerConfiguration()` copies **all** `ologger.*` system properties at construction time.

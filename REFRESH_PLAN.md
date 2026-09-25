@@ -14,7 +14,7 @@ re-check at the start of every stage (`./mvnw versions:display-dependency-update
 | Phase | Goal | Depends on | Unblocks Orienteer | Status |
 |---|---|---|---|---|
 | P0 | AI initialization: AGENTS.md + this plan | — | — | done |
-| A | Stage A: JDK 21/25 build with `--release 21`, pinned plugins, `./mvnw install` of `1.4-SNAPSHOT` | P0 | P3 | todo |
+| A | Stage A: JDK 21/25 build with `--release 21`, pinned plugins, `./mvnw install` of `1.4-SNAPSHOT` | P0 | P3 | done (local install, 2026-09-25; published artifact → R) |
 | B | Stage B: nothing to port (no Wicket/servlet code) — verification only | A | P5 | todo (verification only) |
 | C | Stage C: nothing to port (no `javax.servlet`/`javax.inject`/`javax.mail`) — verification only | A | P6 | todo (verification only) |
 | R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `1.4-SNAPSHOT` now, `1.4` after Orienteer P3 is green (D3) | A | P1/P3 "resolvable from a real repo" | todo |
@@ -50,9 +50,13 @@ re-check at the start of every stage (`./mvnw versions:display-dependency-update
 - [ ] **`org.orienteer` namespace** on the Central Portal: verified? SNAPSHOTs enabled? Blocks the first deploy. (R, owner)
 - [ ] **Correlation IDs across JDKs:** exception IDs hash `StackTraceElement.toString()`, which since JDK 9 includes module
       names (`java.base/…`) and JDK-internal line numbers. When Orienteer moves from JDK 8 to 21, the same exception gets a
-      new ID, so `IOLoggerDAO.getEventsByCorrelationId` no longer groups new incidents with stored ones. Accept the
-      one-time regrouping (recommended, no code change), or hash a normalized frame (class, method, file, line) — which
-      changes every ID once more and is a behavior change? (X, owner)
+      new ID, so `IOLoggerDAO.getEventsByCorrelationId` no longer groups new incidents with stored ones. **Measured
+      2026-09-25:** it also differs between JDK 21 and 25 whenever JDK frames are in the stack — the test's exception
+      (JUnit calls it through `java.base/java.lang.reflect.Method.invoke`, line 580 on 21 vs 565 on 25) gets `16087C73…`
+      on 21 and `3007D426…` on 25; an exception thrown directly from `main` (no JDK frames) and object/string IDs are the
+      same on both. So a JDK upgrade, or a cluster with nodes on different JDKs, splits incident groups. Accept it
+      (recommended for now, no code change), or hash a normalized frame (e.g. skip frames whose `getModuleName()` is a
+      JDK module) — which changes every ID once more and is a behavior change? (X, owner)
 - [ ] **Dispatcher timeouts:** `DefaultOLoggerEventDispatcher` POSTs synchronously on the caller's thread (in Orienteer:
       the request thread) with no connect/read timeout; an unreachable collector blocks requests. Add default timeouts
       (behavior change, needs a config property)? (X)
@@ -96,12 +100,12 @@ also passes on JDK 21 (javadoc 2.10.4 still runs, 89 "no comment" warnings, 0 er
 - [x] A2 Add `maven-enforcer-plugin`: `requireMavenVersion [3.9,)`, `requireJavaVersion [21,)` — 2026-09-25 (enforcer 3.6.3; build-time only, not visible to consumers)
 - [x] A3 Compiler: `maven.compiler.release=21` replaces `source`/`target` 1.8 (there is no `-parameters` to keep) — 2026-09-25: green on JDK 21 and 25, all class files major 65; the "obsolete source/target 8" warnings are gone, the only compiler warning left is the deprecated `new URL(String)` (X). Compiler 3.16.0 also writes an empty `package-info.class` (its `createMissingPackageInfoClass` default), so the jar has 15 class files instead of 14
 - [x] A4 JUnit 4.13.1 → 4.13.2 (test scope) — 2026-09-25; hamcrest-core 1.3 unchanged; 2 run / 0 failures on JDK 21
-- [ ] A5 JDK 21/25 incompatibilities: fix with minimal, behavior-preserving changes; add `--add-opens` only if a test proves it's needed and list it in the handoff (expected: none — no JAXB, Nashorn, `sun.*`, reflection or bytecode libraries)
-- [ ] A6 Library hygiene: no compile/runtime dependencies (`dependency:tree` shows only `junit` in test scope); no logging binding/config, no servlet API; the jar holds only classes + Maven metadata (`jar tf`)
+- [x] A5 JDK 21/25 incompatibilities: fix with minimal, behavior-preserving changes; add `--add-opens` only if a test proves it's needed and list it in the handoff (expected: none — no JAXB, Nashorn, `sun.*`, reflection or bytecode libraries) — 2026-09-25: **nothing to fix, no `--add-opens`/`--add-exports`**, no surefire `argLine`. No JDK warnings at test runtime on 21 or 25. Found and recorded (not a build problem): exception correlation IDs differ between JDK 21 and 25 when JDK frames are in the stack (open question, Appendix C)
+- [x] A6 Library hygiene: no compile/runtime dependencies (`dependency:tree` shows only `junit` in test scope); no logging binding/config, no servlet API; the jar holds only classes + Maven metadata (`jar tf`) — 2026-09-25: `dependency:tree` = `junit:4.13.2:test` → `hamcrest-core:1.3:test` only; jar = 15 class files + `MANIFEST.MF` + `META-INF/maven/org.orienteer/logger/pom.{xml,properties}`; no version pins that consumers inherit (there is no parent pom and no `dependencyManagement`)
 - [x] A7 D9: `DefaultOLoggerEventFactory` applies `source` and `metaData` (null-guarded) + a unit test (`source`/`metaData` reach the dispatched event and `toJson()`) — 2026-09-25: 2 lines in `createLoggerEvent`, applied after the correlation ID (so neither takes part in it) and before the enhancers run; also applied when the seed is an `OLoggerEvent`, but a `null` argument never clears what the event already has. Tests `testSourceAndMetaData` (instance API, JSON, correlation ID unchanged) and `testStaticLogWithSourceAndMetaData` (static `OLogger.log(o, source, meta)`, resets the default instance) both **failed before the fix** (`expected:<TestSource> but was:<null>`) and pass after it. No signature change; Orienteer's `OLogger.log(ex)` path is unaffected (both arguments `null`)
-- [ ] A8 `./mvnw clean verify` green on JDK 21 **and** 25; `./mvnw install`; confirm `~/.m2/repository/org/orienteer/logger/1.4-SNAPSHOT/` has the jar and pom, and all class files are major 65
-- [ ] A9 Update `AGENTS.md` (build status) and write "Handoff to Orienteer" below
-- [ ] Exit check: `./mvnw clean verify` green on JDK 21 and 25; `./mvnw install` done; test results match Appendix C (differences explained)
+- [x] A8 `./mvnw clean verify` green on JDK 21 **and** 25; `./mvnw install`; confirm `~/.m2/repository/org/orienteer/logger/1.4-SNAPSHOT/` has the jar and pom, and all class files are major 65 — 2026-09-25: 4 run / 0 failures / 0 skipped on Temurin 21.0.11 and 25.0.4; `./mvnw clean install` on JDK 21 installed `logger-1.4-SNAPSHOT.jar` (byte-identical to `target/`, manifest `Java-Version: 21`, `Build-Jdk-Spec: 21`) and `logger-1.4-SNAPSHOT.pom`; all 15 class files major 65. Public/protected API compared with `javap -protected` against `159efd9` (pre-refresh): **identical** (14 classes). A throwaway consumer mirroring `orienteer-logger-server` (dispatcher and generator subclasses, protected `collectorUrl`/`syslog`, generator loaded by its stored class name, enhancer metadata, JSON fields) compiles with `-Xlint:all` and passes on JDK 21 and 25 against the installed jar
+- [x] A9 Update `AGENTS.md` (build status) and write "Handoff to Orienteer" below — 2026-09-25
+- [x] Exit check: `./mvnw clean verify` green on JDK 21 and 25; `./mvnw install` done; test results match Appendix C (differences explained) — 2026-09-25: 4 run (2 baseline + 2 added in A7), 0 failures, 0 skipped on both JDKs. **Stage A done** (local install; published artifact → R)
 
 ## B — Stage B: Wicket 9, still javax (→ Orienteer P5)
 
@@ -193,10 +197,15 @@ Goal: confirm the library needs nothing for Orienteer P6 (jakarta Servlet 6, `ja
 
 ## Appendix C — Test inventory
 
-| Test class | `@Test` | `@Ignore` | Baseline JDK 21 / 25: run / skipped | Notes |
-|---|---|---|---|---|
-| `OLoggerTest` | 2 | 0 | 2 / 0 and 2 / 0, 0 failures | `testGenericOLogger` goes through the static default logger (prints to `System.err`); `testExceptionCorelation` checks correlation IDs with an in-memory dispatcher |
-| `TestOLoggerEventDispatcher` | — | — | — | helper (in-memory dispatcher) |
+| Test class | `@Test` | `@Ignore` | Baseline JDK 21 / 25: run / skipped | Stage A exit JDK 21 / 25: run / skipped | Notes |
+|---|---|---|---|---|---|
+| `OLoggerTest` | 2 → 4 (A7) | 0 | 2 / 0 and 2 / 0, 0 failures | 4 / 0 and 4 / 0, 0 failures | `testGenericOLogger` goes through the static default logger (prints to `System.err`); `testExceptionCorelation` checks correlation IDs with an in-memory dispatcher; `testSourceAndMetaData`, `testStaticLogWithSourceAndMetaData` added in A7 (D9) |
+| `TestOLoggerEventDispatcher` | — | — | — | — | helper (in-memory dispatcher) |
+
+Nothing is skipped or disabled. Correlation-ID check (A5): `testGenericOLogger` logs the same `Exception` twice; both
+events share one ID on each JDK, but the ID differs between JDK 21 (`16087C73…`) and JDK 25 (`3007D426…`) because the
+hashed stack contains JDK reflection frames with different line numbers. The `"Hello world"` ID (`85F33159…`) is the
+same on both (open question).
 
 ## Appendix D — Stage B/C inventory (2026-09-25, `rg -l` over `src/`)
 
@@ -222,4 +231,83 @@ rg -l 'org\.apache\.wicket|javax\.(servlet|inject|mail)' src                 # S
 
 ## Handoff to Orienteer
 
-Written when Stage A completes (item A9).
+Stage A, 2026-09-25. `1.4-SNAPSHOT` is **installed locally** (`./mvnw install`); it is not published yet (phase R, owner).
+Coordinates and version are unchanged, so Orienteer's `orienteer-logger-server` dependency needs no edit.
+
+### 1. Installed artifacts (`~/.m2/repository/org/orienteer/logger/1.4-SNAPSHOT/`)
+
+| Coordinates | File |
+|---|---|
+| `org.orienteer:logger:1.4-SNAPSHOT:jar` | `logger-1.4-SNAPSHOT.jar` (15 class files: 14 classes + an empty `package-info`) |
+| `org.orienteer:logger:1.4-SNAPSHOT:pom` | `logger-1.4-SNAPSHOT.pom` |
+
+- No parent pom and no test-jar exist (and never did).
+- **Bytecode:** `--release 21`, so every class file is major version **65**; the manifest says `Java-Version: 21`,
+  `Build-Jdk-Spec: 21`. JDK 17 or older cannot load the classes (Orienteer P3 targets 21, so that's expected).
+- **Built and tested with:** Temurin 21.0.11 (installed build) and Temurin 25.0.4, Maven 3.9.16 through `./mvnw`.
+- The directory also holds `logger-1.4-SNAPSHOT.pom.lastUpdated` and `resolver-status.properties` from Orienteer's earlier
+  failed remote lookups; they don't hide the local install and were left alone.
+
+### 2. Versions compiled against
+
+| Library | Version | Scope |
+|---|---|---|
+| JDK API | `--release 21` | — |
+| Runtime dependencies | **none** | — |
+| JUnit (+ hamcrest-core 1.3) | 4.13.2 | test |
+| Servlet API, Wicket, Guice/`javax.inject`, OrientDB, GraalVM, Lombok, SLF4J/Log4j | not used | — |
+
+### 3. JVM flags Orienteer must mirror
+
+- **None.** No `--add-opens`/`--add-exports` are needed on JDK 21 or 25; the tests run without any `argLine`, and the
+  library uses no reflection into the JDK, no `sun.*` and no `Unsafe`. No JDK warnings are printed at runtime.
+
+### 4. Actions required in Orienteer
+
+1. **Nothing mandatory** for P3: keep `org.orienteer:logger:1.4-SNAPSHOT`. The root pom already has the Central Portal
+   snapshots repository; until the owner deploys the snapshot (phase R), build this repo with `./mvnw install` first.
+2. **Correlation IDs regroup once** (open question): after the JDK 8 → 21 move, the same exception gets a new correlation
+   ID, so `getEventsByCorrelationId` does not match incidents stored under JDK 8. The ID also changes between JDK 21 and 25
+   when JDK frames are in the stack (measured, Appendix C), so all Orienteer nodes of one cluster should run the same JDK.
+   String/object IDs (`OrienteerCorrelationIdGenerator`) are unaffected.
+3. `OLogger.log(obj, source, metaData)` now really sets `source` and adds the metadata (D9). Orienteer only calls
+   `OLogger.log(ex)`, so nothing changes for it; if it starts passing a source, `toJson()` then carries
+   `"source" : "<source.toString()>"` instead of `""`.
+
+### 5. Public API changes
+
+- **None.** `javap -protected` of all 14 classes is identical to `159efd9` (the pre-refresh `master`), including the
+  protected members Orienteer's subclasses use. The JSON produced by `OLoggerEvent.toJson()` is unchanged (the class
+  wasn't touched).
+- One behavior fix: `DefaultOLoggerEventFactory.createLoggerEvent(seed, source, metaData)` applies `source` and
+  `metaData` (both null-guarded) instead of ignoring them (D9, A7).
+
+### 6. Transitive dependency changes
+
+- **None:** the library had no compile or runtime dependencies before and has none now. Orienteer's classpath gains or
+  loses nothing through it.
+
+### 7. Test results
+
+| JDK | Run | Failures | Errors | Skipped |
+|---|---|---|---|---|
+| Temurin 21.0.11 | 4 | 0 | 0 | 0 |
+| Temurin 25.0.4 | 4 | 0 | 0 | 0 |
+
+Nothing is skipped or `@Ignore`d. Two tests were added (A7); the baseline had 2 (both green on 21 and 25 before any
+change). In addition, a throwaway consumer that mirrors `orienteer-logger-server`'s use of the library passed on both JDKs.
+
+### 8. Work for Stages B and C
+
+- **Stage B** (Wicket 9): **nothing to do**, size XS (a search and a green build when Orienteer starts P5). The library
+  has no Wicket code at all.
+- **Stage C** (jakarta): **nothing to do**, size XS. No `javax.servlet`, `javax.inject`, Guice or `javax.mail`; the only
+  `javax.*` import is `javax.net.ssl` (part of the JDK). Orienteer's jakarta work for the incident logger is all in
+  `orienteer-logger-server` (`OLoggerReceiverResource`, mail through orienteer-mail).
+- So Orienteer can keep `org.orienteer:logger:1.4` through P5 and P6 (D3).
+
+### 9. Open questions for the owner
+
+1. **`org.orienteer` namespace** on the Central Portal: verified, with SNAPSHOTs enabled? Needed before the first deploy (D11).
+2. **Correlation IDs across JDKs** (§4.2): accept the regrouping, or normalize the hashed frames later (behavior change)?
+3. **Dispatcher timeouts:** the default dispatcher has none and runs on the request thread (plan X).
