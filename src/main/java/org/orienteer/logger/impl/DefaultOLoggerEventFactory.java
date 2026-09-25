@@ -34,6 +34,8 @@ public class DefaultOLoggerEventFactory implements IOLoggerEventFactory, IOLogge
 		event.setApplication(config.getApplicationName());
 		event.setNodeId(config.getNodeId());
 		event.setCorrelationId(createCorrelationId(seedObject));
+		if (source != null) event.setSource(source);
+		if (metaData != null) event.setMetaData(metaData);
 		return event;
 	}
 
