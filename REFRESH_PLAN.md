@@ -131,8 +131,8 @@ Goal: confirm the library needs nothing for Orienteer P6 (jakarta Servlet 6, `ja
 
 ## R — Release & CI
 
-- [ ] GitHub Actions workflow: push + PR, matrix JDK 21/25 (`actions/setup-java`, `distribution: temurin`, `cache: maven`), `./mvnw -B verify`, upload surefire reports, `concurrency` to cancel superseded runs
-- [ ] Remove Travis and dead badges (there are none today); add the CI badge to `README.md`
+- [x] GitHub Actions workflow: push + PR, matrix JDK 21/25 (`actions/setup-java`, `distribution: temurin`, `cache: maven`), `./mvnw -B verify`, upload surefire reports, `concurrency` to cancel superseded runs — 2026-09-25: `.github/workflows/ci.yml`, same as wicket-orientdb's (push to any branch, PR, manual; `actions/checkout@v7`, `setup-java@v6`, `upload-artifact@v7`; `contents: read`; 15-minute timeout). Validated with `check-jsonschema --builtin-schema vendor.github-workflows`; the first real run happens when the owner pushes. No publishing in CI (D11)
+- [x] Remove Travis and dead badges (there are none today); add the CI badge to `README.md` — 2026-09-25: no `.travis.yml` or badges existed; CI badge added
 - [ ] Replace OSSRH `distributionManagement` and `nexus-staging-maven-plugin` with `org.sonatype.central:central-publishing-maven-plugin` (0.11.0), server id from property `central.server.id` (default `central`), snapshots to the Central Portal snapshots URL (no demo module to exclude)
 - [ ] Release profile: sources + javadoc jars (fix doclint errors), GPG signing (`maven-gpg-plugin` 3.x), required POM metadata (name, description, url per D10, https license URL, developers, scm); maven-release-plugin 2.5.3 → 3.x with tag format `v@{project.version}` (drop the reference to the non-existent `skip-integration-tests` profile)
 - [ ] Snapshot publishing to `https://central.sonatype.com/repository/maven-snapshots/` (D3); Orienteer's root pom already has that repository (its P1, 2026-09-25)

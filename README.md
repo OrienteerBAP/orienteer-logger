@@ -1,3 +1,5 @@
+[![CI](https://github.com/OrienteerBAP/orienteer-logger/actions/workflows/ci.yml/badge.svg)](https://github.com/OrienteerBAP/orienteer-logger/actions/workflows/ci.yml)
+
 # Orienteer Logger
 
 ## What is it?
