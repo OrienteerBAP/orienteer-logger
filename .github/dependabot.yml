@@ -1,0 +1,30 @@
+# Weekly dependency update PRs (REFRESH_PLAN.md, phase R).
+# The library has no runtime dependencies (D4): updates are Maven plugins, JUnit and GitHub Actions.
+# Review every PR against the Orienteer contract before merging, and never publish it as 1.4-SNAPSHOT once 1.4 is out (D3).
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.codehaus.mojo:*"
+          - "org.jacoco:*"
+          - "org.sonatype.central:*"
+    ignore:
+      # Tests stay on JUnit 4 (D5); JUnit 5/6 is a different artifact anyway
+      - dependency-name: "junit:junit"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
