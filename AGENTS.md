@@ -35,8 +35,10 @@ Modernized in lockstep with Orienteer; dormant from Dec 2020 to Sep 2026.
 - Stages B/C need no code here (no Wicket/servlet/inject/mail); re-check with the searches in plan sections B/C.
 - Use `./mvnw` (Maven 3.9.16, script-only wrapper). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21; `.sdkmanrc` pins
   Temurin 21.0.11. Plugin versions live only in `<pluginManagement>`.
-- Publishing is still the old OSSRH setup until phase R replaces it.
-- Only the owner deploys or releases (Central Portal). Agents never upload, push or tag. OSSRH and jcenter are dead.
+- CI: `.github/workflows/ci.yml` (push + PR, JDK 21/25, surefire + JaCoCo reports); Dependabot: `.github/dependabot.yml`.
+- Publishing: `central-publishing-maven-plugin` (server id `${central.server.id}`, default `central`): `-SNAPSHOT`s to the
+  Central Portal snapshots repository, releases as a portal bundle; runbook in plan phase R. `1.4-SNAPSHOT` is not
+  published yet. **Only the owner deploys, releases, pushes or tags** (D11). OSSRH and jcenter are dead.
 
 ## Commands
 
@@ -45,6 +47,7 @@ Modernized in lockstep with Orienteer; dormant from Dec 2020 to Sep 2026.
 ./mvnw install                                                      # jar + pom into ~/.m2 for Orienteer
 ./mvnw test -Dtest=OLoggerTest                                      # one test class
 JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify  # JDK 25 check
+./mvnw -Prelease -Dgpg.skip verify                                  # + sources/javadoc jars; never `deploy` (owner only)
 ```
 
 ## Layout and key classes
