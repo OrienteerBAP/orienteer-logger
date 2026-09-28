@@ -17,7 +17,7 @@ re-check at the start of every stage (`./mvnw versions:display-dependency-update
 | A | Stage A: JDK 21/25 build with `--release 21`, pinned plugins, `./mvnw install` of `1.4-SNAPSHOT` | P0 | P3 | done (local install, 2026-09-25; published artifact → R) |
 | B | Stage B: nothing to port (no Wicket/servlet code) — verification only | A | P5 | todo (verification only) |
 | C | Stage C: nothing to port (no `javax.servlet`/`javax.inject`/`javax.mail`) — verification only | A | P6 | todo (verification only) |
-| R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `1.4-SNAPSHOT` now, `1.4` after Orienteer P3 is green (D3) | A | P1/P3 "resolvable from a real repo" | prepared locally (2026-09-25); waiting for the owner: namespace check, push, snapshot deploy |
+| R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `1.4-SNAPSHOT` now, `1.4` after Orienteer P3 is green (D3) | A | P1/P3 "resolvable from a real repo" | pushed 2026-09-25 (CI green); `1.4-SNAPSHOT` published 2026-09-28; the `1.4` release waits for Orienteer P3 against the snapshot and a GPG key |
 | X | Cleanup, docs, known bugs & security | any time | — | todo |
 
 ## Guiding principles
@@ -47,8 +47,9 @@ re-check at the start of every stage (`./mvnw versions:display-dependency-update
 
 ### Open questions (decide when the phase starts; record the answer above)
 
-- [ ] **`org.orienteer` namespace** on the Central Portal: verified? SNAPSHOTs enabled? Does the token under server `ossrh`
-      belong to an account that owns it? Blocks the first deploy. (R, owner)
+- [x] **`org.orienteer` namespace** on the Central Portal: verified? SNAPSHOTs enabled? Does the token under server `ossrh`
+      belong to an account that owns it? Blocks the first deploy. (R, owner) — 2026-09-28: verified on the same account as `ru.ydn`,
+      SNAPSHOTs enabled by the owner; the token under server id `ossrh` works for it (the deploy succeeded)
 - [ ] **Correlation IDs across JDKs:** exception IDs hash `StackTraceElement.toString()`, which since JDK 9 includes module
       names (`java.base/…`) and JDK-internal line numbers. When Orienteer moves from JDK 8 to 21, the same exception gets a
       new ID, so `IOLoggerDAO.getEventsByCorrelationId` no longer groups new incidents with stored ones. **Measured
@@ -140,7 +141,7 @@ Goal: confirm the library needs nothing for Orienteer P6 (jakarta Servlet 6, `ja
 - [x] `.github/dependabot.yml` (maven + github-actions, weekly, grouped) — 2026-09-25: groups for Maven plugins (incl. JaCoCo, central-publishing) and all GitHub Actions; only ignore rule: JUnit 4 major (D5). None of wicket-orientdb's framework holds apply (no Wicket, servlet, OkHttp, Jetty, OrientDB, Log4j here). Validated with `check-jsonschema --builtin-schema vendor.dependabot`; active once pushed
 - [x] JaCoCo report only (no thresholds) — 2026-09-25: `jacoco-maven-plugin` 0.8.15, `prepare-agent` + `report` at `verify`, instrumenting only `org/orienteer/**`; green on 21 and 25 (reads Java 25 runtime fine). Baseline coverage: 70% instructions, 66% lines, 65% branches over the 8 classes with code (lowest: `DefaultOLoggerEventDispatcher` 32% — its HTTP path is untested, plan X). Nothing JaCoCo-related ends up in the jar. CI uploads `target/site/jacoco/` from the JDK 21 job
 - [x] Local validation without any upload: build green on 21/25; `-Prelease -Dgpg.skip` builds sources/javadoc; list what a Central bundle would contain — 2026-09-25: `./mvnw -B -Prelease -Dgpg.skip clean verify` green on JDK 21 and 25 (4/0/0, JaCoCo on, 0 doclint warnings) → `logger-1.4-SNAPSHOT.jar`, `-sources.jar`, `-javadoc.jar`. As in wicket-orientdb, the bundle is not produced by the plugin (that needs `deploy`, forbidden for agents); it was assembled offline exactly like the plugin does (Maven layout, md5/sha1/sha256/sha512) from a `-Prelease -Dgpg.skip verify` build of a throwaway `git archive` copy set to `1.4` with `versions:set` (in the temp dir, never installed): 4 artifacts + 16 checksums, required POM metadata OK, no `<repositories>`/`distributionManagement`/non-test dependencies in the POM; only the `.asc` signatures are missing (gpg skipped). File list in the handoff (§10)
-- [ ] Owner: confirm the `org.orienteer` namespace is verified with SNAPSHOTs enabled (D11); first `1.4-SNAPSHOT` deploy — runbook below
+- [x] Owner: confirm the `org.orienteer` namespace is verified with SNAPSHOTs enabled (D11); first `1.4-SNAPSHOT` deploy — runbook below — 2026-09-28: deployed from clean `master` `e17aa23` on JDK 21.0.11 with the runbook command (BUILD SUCCESS, 4 tests), run by the Orienteer session on the owner's go-ahead. The snapshots repository serves `logger-1.4-20260928.231253-1` (pom, jar, sources, javadoc). Verified from an empty local repository: resolves, class content identical to the local build. Central Portal snapshots are deleted after 90 days (around 2026-12-27): re-deploy or release `1.4` before then
 - [ ] Owner: release `1.4` once Orienteer P3 is green against `1.4-SNAPSHOT` (GPG key published to a keyserver); then `master` → `1.5-SNAPSHOT` (D3)
 - [ ] Optional, owner's call: publish from CI (GitHub secrets + a workflow on tags), CodeQL — not implemented; CI only builds and tests
 - [ ] Exit check: the snapshot (then `1.4`) resolves from the Central Portal in a clean `~/.m2`; Orienteer's "Stage A delivered" item can be ticked for logger
@@ -265,7 +266,7 @@ rg -l 'org\.apache\.wicket|javax\.(servlet|inject|mail)' src                 # S
 ## Handoff to Orienteer
 
 Stage A and phase R (local preparation), 2026-09-25. `1.4-SNAPSHOT` is **installed locally** (`./mvnw install` from the
-final commit); it is **not published yet**: the owner deploys it (§9, runbook in phase R). Nothing was pushed or tagged.
+final commit). Pushed 2026-09-25; **published 2026-09-28** to the Central Portal snapshots repository (`logger-1.4-20260928.231253-1`). No tags.
 Coordinates and version are unchanged, so Orienteer's `orienteer-logger-server` dependency needs no edit.
 
 ### 1. Installed artifacts (`~/.m2/repository/org/orienteer/logger/1.4-SNAPSHOT/`)
@@ -301,8 +302,8 @@ Coordinates and version are unchanged, so Orienteer's `orienteer-logger-server` 
 ### 4. Actions required in Orienteer
 
 1. **Nothing mandatory** for P3: keep `org.orienteer:logger:1.4-SNAPSHOT`. The root pom already has the Central Portal
-   snapshots repository (`central-portal-snapshots`), which is exactly where the snapshot will be deployed; until the
-   owner deploys it, build this repo with `./mvnw install` first. After the `1.4` release, pin `1.4`.
+   snapshots repository (`central-portal-snapshots`), where the snapshot is published (since 2026-09-28), so no local
+   install is needed any more. After the `1.4` release, pin `1.4`.
 2. **Correlation IDs regroup once** (open question): after the JDK 8 → 21 move, the same exception gets a new correlation
    ID, so `getEventsByCorrelationId` does not match incidents stored under JDK 8. The ID also changes between JDK 21 and 25
    when JDK frames are in the stack (measured, Appendix C), so all Orienteer nodes of one cluster should run the same JDK.
@@ -346,6 +347,8 @@ JDKs too (sources + javadoc, 0 doclint warnings); JaCoCo: 70% instructions, 66% 
 - So Orienteer can keep `org.orienteer:logger:1.4` through P5 and P6 (D3).
 
 ### 9. What the owner needs to do to publish the snapshot, and open questions
+
+**Done 2026-09-28:** namespace confirmed, pushed, `1.4-SNAPSHOT` deployed (see phase R). The steps below stay as the runbook for re-deploys.
 
 To publish `1.4-SNAPSHOT` (hard stops for agents: no deploy, push or tag without the owner):
 1. **Confirm the `org.orienteer` namespace** on the Central Portal: status **unknown**. It must be verified **and** have

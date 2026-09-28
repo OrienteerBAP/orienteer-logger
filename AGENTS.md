@@ -37,8 +37,8 @@ Modernized in lockstep with Orienteer; dormant from Dec 2020 to Sep 2026.
   Temurin 21.0.11. Plugin versions live only in `<pluginManagement>`.
 - CI: `.github/workflows/ci.yml` (push + PR, JDK 21/25, surefire + JaCoCo reports); Dependabot: `.github/dependabot.yml`.
 - Publishing: `central-publishing-maven-plugin` (server id `${central.server.id}`, default `central`): `-SNAPSHOT`s to the
-  Central Portal snapshots repository, releases as a portal bundle; runbook in plan phase R. `1.4-SNAPSHOT` is not
-  published yet. **Only the owner deploys, releases, pushes or tags** (D11). OSSRH and jcenter are dead.
+  Central Portal snapshots repository, releases as a portal bundle; runbook in plan phase R. `1.4-SNAPSHOT` is
+  published there (2026-09-28; snapshots expire after 90 days). **Only the owner deploys, releases, pushes or tags** (D11). OSSRH and jcenter are dead.
 
 ## Commands
 
